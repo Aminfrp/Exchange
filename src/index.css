@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: roboto;
+  src: url(./assets//fonts/roboto.ttf);
+}
+
+html, body, body>div ,body>div>main {
+  height: 100%;
+}
+
+*{
+  font-family: "roboto";
+}
+

@@ -1,26 +1,17 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <router-view></router-view>
 </template>
 
-<script>
-import HelloWorld from './components/HelloWorld.vue'
+<script setup>
+import { getLocalStorageByKey } from "./helpers";
+import router from "./router";
 
-export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
-}
+router.beforeEach((to, from, next) => {
+  const isLogin = getLocalStorageByKey("isLogin");
+  if (to.path !== "/login" && !isLogin) next({ path: "/login" });
+  else if (to.path === "/login" && isLogin) next({ path: "/" });
+  else next();
+});
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
+<style></style>
