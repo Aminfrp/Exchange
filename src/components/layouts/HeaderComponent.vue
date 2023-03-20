@@ -28,9 +28,12 @@
 import { removeLocalStorageByKey } from "@/helpers";
 import router from "@/router";
 import { COLORS } from "@/constants";
+import { useCurrencyStore } from "@/store";
 
+const { resetCurrencies } = useCurrencyStore();
 const userLogout = () => {
   removeLocalStorageByKey("isLogin");
+  resetCurrencies();
   router.replace({ path: "/login", replace: true });
 };
 </script>

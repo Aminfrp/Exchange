@@ -6,6 +6,9 @@ export const useCurrencyStore = defineStore('currency', {
     lastThreeCurrencies: (state) => state.lastCurrencies
   },
   actions: {
+    resetCurrencies(){
+      this.lastCurrencies = []
+    },
     setCurrencies(currency) {
       if(this.lastCurrencies.length < 3){
         this.lastCurrencies.unshift(currency)
