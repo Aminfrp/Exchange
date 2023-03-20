@@ -15,6 +15,8 @@
           <v-form
             class="flex flex-column justify-between h-full"
             @submit.prevent="loginUser"
+            validate-on="submit"
+            ref="form"
           >
             <div>
               <v-text-field
@@ -80,21 +82,26 @@ const password = ref("");
 const snackBar = ref(false);
 const loading = ref(false);
 const showPassword = ref(false);
+const form = ref(null);
+
 // #endregion
 
 // #region methods
-const loginUser = () => {
-  if (userName.value === USER.username && password.value === USER.password) {
-    loading.value = true;
-    // fetch api simulator for loading
-    setTimeout(() => {
-      setLocalStorageByKey("isLogin", true);
-      router.replace({ path: "/", replace: true });
+const loginUser = async () => {
+  const { valid } = await form.value.validate();
+  if (valid) {
+    if (userName.value === USER.username && password.value === USER.password) {
+      loading.value = true;
+      // fetch api simulator for loading
+      setTimeout(() => {
+        setLocalStorageByKey("isLogin", true);
+        router.replace({ path: "/", replace: true });
+        loading.value = false;
+      }, 2000);
+    } else {
+      snackBar.value = true;
       loading.value = false;
-    }, 2000);
-  } else {
-    snackBar.value = true;
-    loading.value = false;
+    }
   }
 };
 // #endregion

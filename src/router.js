@@ -1,10 +1,12 @@
 import LoginPage from "./pages/LoginPage.vue"
-import ExchangePage from "./pages/ExchangePage.vue"
+import ExchangePage from "./pages/ExchangePage.vue"                                     
+import HistoryPage from "./pages/HistoryPage.vue"                                     
 import * as VueRouter from "vue-router";
 
 const routes = [
-  { path: '/', component: ExchangePage },
   { path: '/login', component: LoginPage },
+  { path: '/', component: ExchangePage },
+  { path: '/history', component: HistoryPage },
   { path:"/:pathMatch(.*)*" , redirect:"/"}
 ]
 

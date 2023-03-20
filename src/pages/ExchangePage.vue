@@ -7,20 +7,18 @@ v-container
         currencyList && Object.keys(currencyList).length ? 'with-chart' : ''
       }`"
     >
-      <v-container>
-        <search-component
-          @search="searchCurrency"
-          @resetData="resetData"
-          :loading="searchLoading"
-          @updateTo="(value) => (toSymbol = value)"
-          @updateFrom="(value) => (fromSymbol = value)"
-        />
-      </v-container>
+      <search-component
+        @search="searchCurrency"
+        @resetData="resetData"
+        :loading="searchLoading"
+        @updateTo="(value) => (toSymbol = value)"
+        @updateFrom="(value) => (fromSymbol = value)"
+      />
     </section>
     <!-- Daily chart section -->
     <section
       v-if="currencyList && Object.keys(currencyList).length"
-      class="absolute sm:top-[45%] md:top-[28%] lg:top-[25%] w-full chart-section"
+      class="absolute sm:top-[50%] md:top-[28%] lg:top-[25%] w-full chart-section"
     >
       <v-container>
         <vue-apex-charts
@@ -43,10 +41,16 @@ import SearchComponent from "@/components/specific/SearchComponent.vue";
 import SnackbarComponent from "@/components/common/SnackbarComponent.vue";
 import currencyAxios from "@/apis";
 import VueApexCharts from "vue3-apexcharts";
-import { ref, toRaw, watch } from "vue";
+import { computed, ref, toRaw, watch } from "vue";
+import { useCurrencyStore } from "@/store";
+
+// #region store
+const store = useCurrencyStore();
+// #endregion
 
 // #region states
 const currencyList = ref({});
+const currencyInfo = ref({});
 const options = ref({});
 const series = ref([]);
 const searchLoading = ref(false);
@@ -54,6 +58,17 @@ const errorMessage = ref("");
 const snackBar = ref(false);
 const fromSymbol = ref("");
 const toSymbol = ref("");
+// #endregion
+// #region computed
+const info = computed({
+  get() {
+    return (
+      toRaw(currencyInfo.value["2. From Symbol"]) +
+      " to " +
+      toRaw(currencyInfo.value["3. To Symbol"])
+    );
+  },
+});
 // #endregion
 // #region methods
 const searchCurrency = async () => {
@@ -73,6 +88,12 @@ const searchCurrency = async () => {
       snackBar.value = true;
     } else {
       currencyList.value = data.data["Time Series FX (Daily)"];
+      currencyInfo.value = data.data["Meta Data"];
+      store.setCurrencies({
+        data: data.data["Time Series FX (Daily)"],
+        series,
+        options,
+      });
     }
   } catch (err) {
     searchLoading.value = false;
@@ -98,6 +119,19 @@ watch(currencyList, (currencies, _) => {
         },
         zoom: {
           enabled: true,
+        },
+      },
+      title: {
+        text: info.value,
+        align: "center",
+        margin: 10,
+        offsetX: 0,
+        offsetY: 0,
+        floating: false,
+        style: {
+          fontSize: "14px",
+          fontWeight: "bold",
+          color: "#263238",
         },
       },
       responsive: [
@@ -131,9 +165,9 @@ watch(currencyList, (currencies, _) => {
     const close = { name: "close", data: [] };
     Object.values(currencies).forEach((currency) => {
       open.data.push(toRaw(currency)["1. open"]);
-      high.data.push(toRaw(currency)["1. open"]);
-      low.data.push(toRaw(currency)["1. open"]);
-      close.data.push(toRaw(currency)["1. open"]);
+      high.data.push(toRaw(currency)["2. high"]);
+      low.data.push(toRaw(currency)["3. low"]);
+      close.data.push(toRaw(currency)["4. close"]);
     });
 
     series.value = [open, high, low, close];
@@ -151,6 +185,6 @@ watch(currencyList, (currencies, _) => {
   top: 5%;
 }
 .chart-section {
-  transition: all 1s ease 3s;
+  transition: all 1s ease 2s;
 }
 </style>

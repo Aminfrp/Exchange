@@ -3,6 +3,7 @@
     @submit.prevent="search"
     ref="form"
     @reset.prevent="reset"
+    validate-on="submit"
     class="shadow-lg mx-5 border rounded-lg"
   >
     <h1 class="px-5 py-2 font-weight-bold">Select your currencies</h1>
@@ -15,6 +16,7 @@
         item-title="description"
         item-value="symbol"
         class="lg:col-span-5 md:col-span-3 sm:col-span-1"
+        :rules="[(v) => !!v || 'From currency is required']"
         color="primary"
         placeholder="Please select your from currency"
         @update:modelValue="updateFrom($event)"
@@ -24,6 +26,7 @@
         color="primary"
         class="lg:col-span-5 md:col-span-3 sm:col-span-1"
         placeholder="Please select your currency you want converted"
+        :rules="[(v) => !!v || 'To currency is required']"
         :items="DUMMY_DATA"
         item-title="description"
         item-value="symbol"
@@ -74,9 +77,12 @@ const reset = () => {
   emit("resetData");
 };
 
-const search = () => {
-  emit("search");
-  form.value.reset();
+const search = async () => {
+  const { valid } = await form.value.validate();
+  if (valid) {
+    emit("search");
+    form.value.reset();
+  }
 };
 // #endregion
 </script>
