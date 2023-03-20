@@ -1,7 +1,7 @@
 <template>
   <main class="flex items-center justify-center">
     <v-sheet class="w-3/5 rounded-xl" elevation="10">
-      <div class="grid md:grid-cols-2 sm:grid-cols-1">
+      <div class="grid lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1">
         <!-- login image -->
         <section class="flex items-center justify-center">
           <img
@@ -24,9 +24,10 @@
                 label="Username"
                 id="username"
                 color="primary"
-                prepend-inner-icon="mdi-person"
+                prepend-inner-icon="mdi-account"
               ></v-text-field>
               <v-text-field
+                prepend-inner-icon="mdi-lock"
                 v-model="password"
                 class="rounded-xl mb-5"
                 :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
@@ -47,6 +48,7 @@
               <v-btn
                 type="submit"
                 block
+                prepend-icon="mdi-login"
                 :loading="loading"
                 class="mt-2 slef-end"
                 color="primary"
@@ -58,19 +60,17 @@
         </section>
       </div>
     </v-sheet>
-    <v-snackbar v-model="snackBar" color="red" :timeout="2000">
-      Username or password is incorect!!!
-      <template v-slot:actions>
-        <v-btn color="white" variant="text" @click="snackBar = false">
-          Close
-        </v-btn>
-      </template>
-    </v-snackbar>
+    <snackbar-component
+      message="Username or password is incorect!!!"
+      :isShow="snackBar"
+      @close="snackBar = false"
+    />
   </main>
 </template>
 
 <script setup>
 import router from "@/router";
+import SnackbarComponent from "@/components/common/SnackbarComponent.vue";
 import { ref } from "vue";
 import { USER } from "@/constants";
 import { setLocalStorageByKey } from "@/helpers";

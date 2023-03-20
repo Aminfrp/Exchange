@@ -7,7 +7,6 @@ import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import '@mdi/font/css/materialdesignicons.css'
-import { COLORS } from './constants'
 
 const vuetify = createVuetify({
   components,
@@ -16,12 +15,7 @@ const vuetify = createVuetify({
     defaultSet: 'mdi',
   },
   theme:{
-    colors: {
-      background: COLORS.background,
-      surface: COLORS.surface,
-      primary: COLORS.primary,
-      secondary: COLORS.secondary,
-    }
+    dark:false,
   }
 })
 
